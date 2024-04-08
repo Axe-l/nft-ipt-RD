@@ -6,12 +6,12 @@ if [[ ! -d "/etc/iptables" ]]; then
 fi
 
 # Check if nftables is installed
-if [[ $result == *"nftables.conf: /etc/nftables.conf"* ]]; then
+if [[ -f /etc/nftables.conf ]]; then
+    echo "----------------------------------------------------"
+    echo "******************* nftables 已安装 *******************"
+else
     echo "----------------------------------------------------"
     echo "******************* nftables 未安装 *******************"
-else
-   echo "----------------------------------------------------"
-    echo "******************* nftables 已安装 *******************"
 fi
 
 # Check if iptables is installed
@@ -95,7 +95,7 @@ fi
                     1)
                         # Validate and prompt for input
                         while true; do
-                            read -p "Enter local port (range: 0-65535): " local_port
+                            read -p " 请输入本机端口(非落地) Enter local port (range: 0-65535): " local_port
                             if validate_port $local_port; then
                                 break
                             else
@@ -104,7 +104,7 @@ fi
                         done
 
                         while true; do
-                            read -p "Enter local IP address (e.g.: 192.168.1.100): " local_ip
+                            read -p " 请输入本机ip Enter local IP address (e.g.: 192.168.1.100): " local_ip
                             if validate_ip $local_ip; then
                                 break
                             else
@@ -113,7 +113,7 @@ fi
                         done
 
                         while true; do
-                            read -p "Enter remote port (range: 0-65535): " remote_port
+                            read -p " 请输入落地端口 Enter remote port (range: 0-65535): " remote_port
                             if validate_port $remote_port; then
                                 break
                             else
@@ -122,7 +122,7 @@ fi
                         done
 
                         while true; do
-                            read -p "Enter remote IP (e.g.: 192.168.1.2): " remote_ip
+                            read -p " 请输入落地ip Enter remote IP (e.g.: 192.168.1.2): " remote_ip
                             if validate_ip $remote_ip; then
                                 break
                             else
