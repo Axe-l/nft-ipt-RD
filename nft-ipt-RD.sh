@@ -70,14 +70,18 @@ while true; do
     case $choice in
         1)
             # Check if nftables is installed
-            if ! systemctl status nftables &> /dev/null; then
-                echo "nftables is not installed"
-                echo "Installing nftables..."
-                apt install -y nftables
-                systemctl enable nftables
-                systemctl start nftables
-                echo "nftables installed and started"
-            fi
+if [ -e "/etc/nftables.conf" ]; then
+    echo "正在使用nftables."
+else
+    # 安装nftables
+    apt install -y nftables
+
+    # 启用并启动nftables服务
+    systemctl enable nftables
+    systemctl start nftables
+
+    echo "nftables installed and started."
+fi
 
             # Level 1 menu for nftables
             while true; do
@@ -140,17 +144,26 @@ while true; do
                             }
                         }"
 
-                        # Write config file
+                                               # Write config file
                         echo "$config" > /etc/nftables/nat.nft
 
-                        # Include config file in nftables.conf
+                        # Check if config file was successfully written
                         if [ -f "/etc/nftables/nat.nft" ]; then
+                            # Include config file in nftables.conf
                             if ! grep -q 'include "/etc/nftables/nat.nft"' /etc/nftables.conf; then
                                 echo 'include "/etc/nftables/nat.nft"' >> /etc/nftables.conf
                             fi
+
+                            # Check nftables status and start or restart
+                            if systemctl is-active --quiet nftables; then
+                                systemctl restart nftables
+                            else
+                                systemctl start nftables
+                            fi
                         else
-                            sed -i '/include "\/etc\/nftables\/nat.nft"/d' /etc/nftables.conf
+                            echo "Failed to write config file to /etc/nftables/nat.nft"
                         fi
+
 
                         # Check nftables status and start or restart
                         if systemctl is-active --quiet nftables; then
