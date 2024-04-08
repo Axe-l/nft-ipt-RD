@@ -6,7 +6,7 @@ if [[ ! -d "/etc/iptables" ]]; then
 fi
 
 # Check if nftables is installed
-if ! systemctl status nftables &> /dev/null; then
+if [[ $result == *"nftables.conf: /etc/nftables.conf"* ]]; then
     echo "----------------------------------------------------"
     echo "******************* nftables 未安装 *******************"
 else
