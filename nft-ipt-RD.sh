@@ -48,10 +48,7 @@ validate_port() {
 
 # Check if IP forwarding is enabled
 if grep -q "net.ipv4.ip_forward = 1" /etc/sysctl.conf; then
-    # Disable IP forwarding
-    sed -i '/net.ipv4.ip_forward = 1/d' /etc/sysctl.conf
-    sysctl -p > /dev/null
-    echo "IP forwarding disabled successfully."
+    echo "IP forwarding already enabled."
 else
     # Enable IP forwarding
     echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
